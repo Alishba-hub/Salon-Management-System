@@ -1,4 +1,4 @@
-#include<iostream>//WAN SALON
+#include<iostream>
 #include<string>
 using namespace std;
 
@@ -222,12 +222,13 @@ public:
 class Schedule : public services {
 public:
  static string Weekdays[7];
- static string MakeupArtistAvailability[8][2]; = { {"Monday","Thursday"},{"Monday","Sunday"},{"Wednesday","Friday"},{"Tuesday","Saturday"},{"Tuesday","Sunday"},{"Thursday","Friday"},{"Saturday","Monday"},{"Wednesday","Tuesday"} };
- static string MeniPediAvailability[5]; = { "Tuesday","Friday","Thursday","Wednesday","Monday" };
- static string HaistylistAvailability[5]; = { "Monday","Thursday","Wednesday","Tuesday","Friday" };
- static string MakeupTimeSlots[3]; = { "12 p.m. to 4 p.m.","3 p.m. to 7.30 p.m.","6.30p.m. to 9.30 p.m." };
- static string MeniPediFacialTimesSlots[4]; = { "12 p.m. to 2 p.m.","2 p.m. to 4 p.m.","6 p.m. to 8 p.m.","8 p.m. to 10 p.m." };
- static string HairstyleTimeSlots[4]; = { "12 p.m. to 2 p.m.","2 p.m. to 4 p.m.","6 p.m. to 8 p.m.","8 p.m. to 10 p.m." };
+ static string MakeupArtistAvailability[8];
+ static string MeniPediAvailability[5];
+ static string HaistylistAvailability[5];
+ static string MakeupTimeSlots[3];
+ static string MeniPediFacialTimesSlots[4];
+ static string HairstyleTimeSlots[4];
+
 
  friend void AppointmentAndScheduling(string, string);
  void virtual update() {}
@@ -251,7 +252,7 @@ public:
   for (int i = 0; i < 8; i++) {
    cout << staff_makeup_artist[i] << "\t\t\t";
    cout << "Rs." << price_makeupartist[i] << "\t\t";
-   cout << MakeupArtistAvailability[i][0] << " & " << MakeupArtistAvailability[i][1] << endl;
+   cout << MakeupArtistAvailability[i] << endl;
   }
   cout << endl;
   cout << "MENI PEDI &n FACIAL\tFEES\t\t\tOFF DAY" << endl << endl;
@@ -272,30 +273,138 @@ public:
 
 };
 string Schedule::Weekdays[7] = { "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday" };
-string Schedule::MakeupArtistAvailability[8][2] = { {"Monday","Thursday"},{"Monday","Sunday"},{"Wednesday","Friday"},{"Tuesday","Saturday"},{"Tuesday","Sunday"},{"Thursday","Friday"},{"Saturday","Monday"},{"Wednesday","Tuesday"} };
-string Schedule::
-string Schedule::
-string Schedule::
+string Schedule::MakeupArtistAvailability[8] = { "Monday","Monday","Sunday","Wednesday","Friday","Tuesday","Saturday","Thursday" };
+string Schedule::MeniPediAvailability[5] = { "Tuesday","Friday","Thursday","Wednesday","Monday" };
+string Schedule::HaistylistAvailability[5] = { "Monday","Thursday","Wednesday","Tuesday","Friday" };
+string Schedule::MakeupTimeSlots[3] = { "12 p.m. to 4 p.m.","3 p.m. to 7.30 p.m.","6.30p.m. to 9.30 p.m." };
+string Schedule::MeniPediFacialTimesSlots[4] = { "12 p.m. to 2 p.m.","2 p.m. to 4 p.m.","6 p.m. to 8 p.m.","8 p.m. to 10 p.m." };
+string Schedule::HairstyleTimeSlots[4] = { "12 p.m. to 2 p.m.","2 p.m. to 4 p.m.","6 p.m. to 8 p.m.","8 p.m. to 10 p.m." };
+string MakeupTimeSlotBooked[8][6][3];//8 makeup artists, 5 workingdays and 3 timeslots
+string MPFTimeSlotsBooked[5][6][4];
+string HairstyleTimeSlotsBooked[5][6][4];
+
 void AppointmentAndScheduling(string Service, string StaffName) {
- string MakeupTimeSlotBooked[8][5][3];//8 makeup artists, 5 workingdays and 3 timeslots
- string MPFTimeSlotsBooked[5][6][4];
- string HairstyleTimeSlotsBooked[5][6][4];
+ int choice=0, choice2=0,var=0,var2=0;
  if (Service == "Party Makeup" || Service == "Bridal Makeup") {
   for (int i = 0; i < 8; i++) {
    if (StaffName == services::staff_makeup_artist[i]) {
-    for (int j = 0; j < 7; j++) {
-     if (Schedule::Weekdays[j] != MakeupArtistAvailability[j][0] || Weekdays[j] != MakeupArtistAvailability[j][1]) {
-
+    cout << "Select" << endl;
+    for (int k = 0; k < 7; k++) {
+     if (Schedule::Weekdays[k] != Schedule::MakeupArtistAvailability[i]) {
+      cout << k + 1 << ": " << Schedule::Weekdays[k] << endl;
+     }
+     if (Schedule::Weekdays[k] == Schedule::MakeupArtistAvailability[i]) {
+      cout << k + 1 << ": " << Schedule::Weekdays[k] << " ------> NOT AVAILABLE!!!" << endl;
+      var = k;
      }
     }
+    cout << "Select:\n";
+    cin >> choice;
+    while (choice == var+1) {
+     cout << "Please select a valid option!" << endl;
+     cin >> choice;
+    }
+    
+    cout << "TimeSlots Available: " << endl;
+    for (int l = 0; l < 3; l++) {
+     if (MakeupTimeSlotBooked[i][choice - 1][l] != Schedule::MakeupTimeSlots[0]&& MakeupTimeSlotBooked[i][choice - 1][l] != Schedule::MakeupTimeSlots[1] && MakeupTimeSlotBooked[i][choice - 1][l] != Schedule::MakeupTimeSlots[2] ) {
+      cout << l + 1 << ": " << Schedule::MakeupTimeSlots[l] << endl;
+     }
+     else {
+      cout << l + 1 << ": " << Schedule::MakeupTimeSlots[l] << " ------> ALREADY BOOKED!!!" << endl;
+      var2 = l;
+     }
+    }
+    cout << "Select:\n";
+    cin >> choice2;
+    while (choice2 == var2 + 1) {
+     cout << "Please select a valid option!" << endl;
+     cin >> choice2;
+    }
+    MakeupTimeSlotBooked[i][choice - 1][choice2 - 1] = Schedule::MakeupTimeSlots[choice2 - 1];
+    cout << "Makeup Artist: " << StaffName << "\tDay: " << Schedule::Weekdays[choice - 1] << "\t" << "Time: " << MakeupTimeSlotBooked[i][choice - 1][choice2 - 1] << endl;
    }
   }
  }
  if (Service == "Facial,Menicure or Pedicure") {
-
+  for (int i = 0; i < 5; i++) {
+   if (StaffName == services::staff_facial_meni_pedi[i]) {
+    cout << "Select" << endl;
+    for (int k = 0; k < 7; k++) {
+     if (Schedule::Weekdays[k] != Schedule::MeniPediAvailability[i]) {
+      cout << k + 1 << ": " << Schedule::Weekdays[k] << endl;
+     }
+     if (Schedule::Weekdays[k] == Schedule::MeniPediAvailability[i]) {
+      cout << k + 1 << ": " << Schedule::Weekdays[k] << " ------> NOT AVAILABLE!!!" << endl;
+      var = k;
+     }
+    }
+    cout << "Select:\n";
+    cin >> choice;
+    while (choice == var + 1) {
+     cout << "Please select a valid option!" << endl;
+     cin >> choice;
+    }
+    cout << "TimeSlots Available: " << endl;
+    for (int l = 0; l < 4; l++) {
+     if (MPFTimeSlotsBooked[i][choice - 1][l] != Schedule::MeniPediFacialTimesSlots[0] && MPFTimeSlotsBooked[i][choice - 1][l] != Schedule::MeniPediFacialTimesSlots[1] && MPFTimeSlotsBooked[i][choice - 1][l] != Schedule::MeniPediFacialTimesSlots[2]) {
+      cout << l + 1 << ": " << Schedule::MeniPediFacialTimesSlots[l] << endl;
+     }
+     else {
+      cout << l + 1 << ": " << Schedule::MeniPediFacialTimesSlots[l] << " ------> ALREADY BOOKED!!!" << endl;
+      var2 = l;
+     }
+    }
+    cout << "Select:\n";
+    cin >> choice2;
+    while (choice2 == var2 + 1) {
+     cout << "Please select a valid option!" << endl;
+     cin >> choice2;
+    }
+    MPFTimeSlotsBooked[i][choice - 1][choice2 - 1] = Schedule::MeniPediFacialTimesSlots[choice2 - 1];
+    cout << "Meni, Pedi and Facial Staff: " << StaffName << "\tDay: " << Schedule::Weekdays[choice - 1] << "\t" << "Time: " << MPFTimeSlotsBooked[i][choice - 1][choice2 - 1] << endl;
+   }
+  }
  }
  if (Service == "Hairstyle") {
-
+  for (int i = 0; i < 5; i++) {
+   if (StaffName == services::staff_hairstylist[i]) {
+    cout << "Select" << endl;
+    for (int k = 0; k < 7; k++) {
+     if (Schedule::Weekdays[k] != Schedule::HaistylistAvailability[i]) {
+      cout << k + 1 << ": " << Schedule::Weekdays[k] << endl;
+     }
+     if (Schedule::Weekdays[k] == Schedule::HaistylistAvailability[i]) {
+      cout << k + 1 << ": " << Schedule::Weekdays[k] << " ------> NOT AVAILABLE!!!" << endl;
+      var = k;
+     }
+    }
+    cout << "Select:\n";
+    cin >> choice;
+    while (choice == var + 1) {
+     cout << "Please select a valid option!" << endl;
+     cin >> choice;
+    }
+    cout << "TimeSlots Available: " << endl;
+    for (int l = 0; l < 4; l++) {
+     if (HairstyleTimeSlotsBooked[i][choice - 1][l] != Schedule::HairstyleTimeSlots[0] && HairstyleTimeSlotsBooked[i][choice - 1][l] != Schedule::HairstyleTimeSlots[1] && HairstyleTimeSlotsBooked[i][choice - 1][l] != Schedule::HairstyleTimeSlots[2]) {
+      cout << l + 1 << ": " << Schedule::HairstyleTimeSlots[l] << endl;
+     }
+     else {
+      cout << l + 1 << ": " << Schedule::HairstyleTimeSlots[l] << " ------> ALREADY BOOKED!!!" << endl;
+      var2 = l;
+     }
+    }
+    cout << "Select:\n";
+    cin >> choice2;
+    while (choice2 == var2 + 1) {
+     cout << "Please select a valid option!" << endl;
+     cin >> choice2;
+    }
+    HairstyleTimeSlotsBooked[i][choice - 1][choice2 - 1] = Schedule::HairstyleTimeSlots[choice2 - 1];
+    cout << "HairStylist: " << StaffName << "\tDay: " << Schedule::Weekdays[choice - 1] << "\t" << "Time: " << HairstyleTimeSlotsBooked[i][choice - 1][choice2 - 1] << endl;
+   }
+  }
  }
 }
 int main() {
